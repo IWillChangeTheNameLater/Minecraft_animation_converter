@@ -121,7 +121,7 @@ def resize_frame(frame: np.ndarray, resize_size: int) -> np.ndarray:
     return frame
 
 
-def iter_each_n_frame(video, each_n_frame: int = 1) \
+def iter_each_n_frame(video: cv2.VideoCapture, each_n_frame: int = 1) \
         -> Iterator[np.ndarray]:
     """Iterate through each frame with the specified number.
 
@@ -143,7 +143,7 @@ def iter_each_n_frame(video, each_n_frame: int = 1) \
 
 
 def convert_video_to_animation_img(
-        video,
+        video: cv2.VideoCapture,
         resize_size: int | None = None,
         each_n_frame: int = 1) -> np.ndarray:
     """Convert the video to a Minecraft animation image format.
