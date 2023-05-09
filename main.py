@@ -1,3 +1,4 @@
+from typing import Iterator
 import os
 from math import log2
 from pathlib import Path
@@ -120,39 +121,53 @@ def resize_frame(frame: np.ndarray, resize_size: int) -> np.ndarray:
     return frame
 
 
-def convert_video_to_animation_img(
-        video,
-        resize_size: int | None = None,
-        each_frame_numbered: int = 1) -> np.ndarray:
-    """Convert the video to a Minecraft animation image format.
+def iter_each_n_frame(video, each_n_frame: int = 1) \
+        -> Iterator[np.ndarray]:
+    """Iterate through each frame with the specified number.
 
-    Convert the video to the animated image format supported by Minecraft.
-
-    :param video: The video format supported by the opencv-python.
-    :param resize_size: The size of a frame in the animation.
-    :param each_frame_numbered: How much to reduce the number of frames
+    :param video: The video from which the frames are taken.
+    :param each_n_frame: How much to reduce the number of frames
     in the animation, compared to the original video.
 
-    :return: The image (numpy ndarray) with frames following each other."""
-    img = None
-
+    :return: The iterator with required frames of the video."""
     frame_i = 0
     while True:
         ret, frame = video.read()
 
         if not ret: break
 
-        if frame_i % each_frame_numbered == 0:
-            frame = crop_rectangle_as_square(frame)
-            if resize_size:
-                frame = resize_frame(frame, resize_size)
-
-            if img is None:
-                img = frame
-            else:
-                img = np.concatenate((img, frame))
+        if frame_i % each_n_frame == 0:
+            yield frame
 
         frame_i += 1
+
+
+def convert_video_to_animation_img(
+        video,
+        resize_size: int | None = None,
+        each_n_frame: int = 1) -> np.ndarray:
+    """Convert the video to a Minecraft animation image format.
+
+    Convert the video to the animated image format supported by Minecraft.
+
+    :param video: The video from which the frames are taken.
+    :param resize_size: The size of a frame in the animation.
+    :param each_n_frame: How much to reduce the number of frames
+    in the animation, compared to the original video.
+
+    :return: The image (numpy ndarray) with frames following each other."""
+    img = None
+
+    frame_i = 0
+    for frame in iter_each_n_frame(video, each_n_frame):
+        frame = crop_rectangle_as_square(frame)
+        if resize_size:
+            frame = resize_frame(frame, resize_size)
+
+        if img is None:
+            img = frame
+        else:
+            img = np.concatenate((img, frame))
 
     return img
 
