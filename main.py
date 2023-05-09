@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 
 
-def get_source_path():
+def get_source_path() -> Path:
     request_phrase = 'Enter the path to the source video file: \n'
 
     while True:
@@ -25,7 +25,7 @@ def get_source_path():
         return source_path
 
 
-def get_animation_resolution():
+def get_animation_resolution() -> int | None:
     request_phrase = 'Enter the resolution of the output animation frame. \n' \
                      'It must be equal to 2^n: \n'
 
@@ -56,7 +56,7 @@ def get_animation_resolution():
         return video_resolution
 
 
-def get_frames_count_reduction():
+def get_frames_count_reduction() -> int:
     request_phrase = 'Enter how many times do you want to reduce the ' \
                      'number of frames of the animation: \n'
 
@@ -84,11 +84,11 @@ def get_frames_count_reduction():
         return frame_reduction
 
 
-def reduce_to_power_of_2(num):
+def reduce_to_power_of_2(num: float) -> int:
     return 2 ** int(log2(num))
 
 
-def crop_rectangle_as_square(frame):
+def crop_rectangle_as_square(frame: np.ndarray) -> np.ndarray:
     width, height, _ = frame.shape
 
     side_size = min(width, height)
@@ -102,12 +102,13 @@ def crop_rectangle_as_square(frame):
     return frame
 
 
-def resize_frame(frame, resize_size):
+def resize_frame(frame: np.ndarray, resize_size: int) -> np.ndarray:
     frame = cv2.resize(frame, (resize_size, resize_size))
     return frame
 
 
-def convert_video_to_animation_img(video, resize_size=None, each_frame_numbered=1):
+def convert_video_to_animation_img(video, resize_size: int | None = None,
+                                   each_frame_numbered: int = 1) -> np.ndarray:
     img = None
 
     frame_i = 0
@@ -131,11 +132,11 @@ def convert_video_to_animation_img(video, resize_size=None, each_frame_numbered=
     return img
 
 
-def save_animation_img(img, name):
+def save_animation_img(img: np.ndarray, name: str) -> None:
     cv2.imwrite(name + '.png', img)
 
 
-def save_animation_properties(frametime, name):
+def save_animation_properties(frametime: float, name: str | Path) -> None:
     properties_text = '''{
 		"animation": {
 			"frametime": ''' + str(frametime) + ''' 
@@ -146,7 +147,7 @@ def save_animation_properties(frametime, name):
         mcmeta.write(properties_text)
 
 
-def save_minecraft_animation(img, fps, name='minecraft_animation'):
+def save_minecraft_animation(img: np.ndarray, fps: int, name: str = 'minecraft_animation'):
     name = os.path.splitext(name)[0]
     frametime = 20 / fps  # Convert FPS to Minecraft ticks interval
 
