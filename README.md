@@ -21,6 +21,10 @@ To use this application, follow these steps:
    animation frame, and how many times you want to reduce the number of frames of the animation.
 5. After the conversion is complete, the output files will be saved in the same directory as the source video file.
 
+### Or
+
+Just run the `Minecraft_animation_converter.exe` executable file.
+
 ## Example
 
 By running the program, specifying the name of the video file and
@@ -33,7 +37,7 @@ The video (gif, in our case):
 ![example.gif](example.gif)
 
 The output texture image:
-[exapmle.png](example.png)
+[example.png](example.png)
 
 The output .mcmeta file with the animation properties:
 [example.png.mcmeta](example.png.mcmeta)
