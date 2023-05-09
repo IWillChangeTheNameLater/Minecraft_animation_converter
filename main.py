@@ -7,6 +7,7 @@ import numpy as np
 
 
 def get_source_path() -> Path:
+    """Require the path to the video file from user."""
     request_phrase = 'Enter the path to the source video file: \n'
 
     while True:
@@ -26,7 +27,8 @@ def get_source_path() -> Path:
 
 
 def get_animation_resolution() -> int | None:
-    request_phrase = 'Enter the resolution of the output animation frame. \n' \
+    """Require the resolution of output animation frame from the user."""
+    request_phrase = 'Enter the resolution of the output animation frame.\n' \
                      'It must be equal to 2^n: \n'
 
     while True:
@@ -57,6 +59,7 @@ def get_animation_resolution() -> int | None:
 
 
 def get_frames_count_reduction() -> int:
+    """Ask the user how much to reduce the number of frames."""
     request_phrase = 'Enter how many times do you want to reduce the ' \
                      'number of frames of the animation: \n'
 
@@ -85,10 +88,12 @@ def get_frames_count_reduction() -> int:
 
 
 def reduce_to_power_of_2(num: float) -> int:
+    """Reduce the number to the nearest power of two."""
     return 2 ** int(log2(num))
 
 
 def crop_rectangle_as_square(frame: np.ndarray) -> np.ndarray:
+    """Cut the middle square from the frame."""
     width, height, _ = frame.shape
 
     side_size = min(width, height)
@@ -103,12 +108,32 @@ def crop_rectangle_as_square(frame: np.ndarray) -> np.ndarray:
 
 
 def resize_frame(frame: np.ndarray, resize_size: int) -> np.ndarray:
+    """Resize the frame.
+
+    Resize the frame to the resize size.
+
+    :param frame: The frame to resize.
+    :param resize_size: The size the frame must be after the resizing.
+
+    :return: The resized frame."""
     frame = cv2.resize(frame, (resize_size, resize_size))
     return frame
 
 
-def convert_video_to_animation_img(video, resize_size: int | None = None,
-                                   each_frame_numbered: int = 1) -> np.ndarray:
+def convert_video_to_animation_img(
+        video,
+        resize_size: int | None = None,
+        each_frame_numbered: int = 1) -> np.ndarray:
+    """Convert the video to a Minecraft animation image format.
+
+    Convert the video to the animated image format supported by Minecraft.
+
+    :param video: The video format supported by the opencv-python.
+    :param resize_size: The size of a frame in the animation.
+    :param each_frame_numbered: How much to reduce the number of frames
+    in the animation, compared to the original video.
+
+    :return: The image (numpy ndarray) with frames following each other."""
     img = None
 
     frame_i = 0
@@ -137,6 +162,12 @@ def save_animation_img(img: np.ndarray, name: str) -> None:
 
 
 def save_animation_properties(frametime: float, name: str | Path) -> None:
+    """Generate .mcmeta file with properties of the minecraft animation.
+
+    :param frametime: The interval after which the frame in the
+    animation changes.
+    :param name: The name of the file that will be saved
+    without the extension."""
     properties_text = '''{
 		"animation": {
 			"frametime": ''' + str(frametime) + ''' 
@@ -147,7 +178,10 @@ def save_animation_properties(frametime: float, name: str | Path) -> None:
         mcmeta.write(properties_text)
 
 
-def save_minecraft_animation(img: np.ndarray, fps: int, name: str = 'minecraft_animation'):
+def save_minecraft_animation(img: np.ndarray,
+                             fps: int,
+                             name: str = 'minecraft_animation'):
+    """Save the image as Minecraft animation (with the .mcmeta file)."""
     name = os.path.splitext(name)[0]
     frametime = 20 / fps  # Convert FPS to Minecraft ticks interval
 
