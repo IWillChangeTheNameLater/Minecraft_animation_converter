@@ -32,6 +32,8 @@ def get_animation_resolution():
     while True:
         video_resolution = input(request_phrase)
 
+        if not video_resolution: return
+
         if not video_resolution.isdigit():
             print('The resolution must be a number!')
             continue
@@ -60,6 +62,8 @@ def get_frames_count_reduction():
 
     while True:
         frame_reduction = input(request_phrase)
+
+        if not frame_reduction: return 1
 
         if not frame_reduction.isdigit():
             print('The input must be a number!')
@@ -156,6 +160,10 @@ def main():
     frames_count_reduction = get_frames_count_reduction()
 
     video = cv2.VideoCapture(str(source_path))
+    if animation_resolution is None:
+        animation_resolution = min(video.get(cv2.CAP_PROP_FRAME_WIDTH),
+                                   video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        animation_resolution = reduce_to_power_of_2(animation_resolution)
 
     animation_img = convert_video_to_animation_img(
         video,
