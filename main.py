@@ -144,15 +144,17 @@ def save_animation_properties(frametime, name):
 
 def save_minecraft_animation(img, fps, name='minecraft_animation'):
     name = os.path.splitext(name)[0]
+    frametime = 20 / fps  # Convert FPS to Minecraft ticks interval
 
     save_animation_img(img, name)
-    save_animation_properties(20 / fps, name)
+    save_animation_properties(frametime, name)
 
 
 def main():
     source_path = get_source_path()
     animation_resolution = get_animation_resolution()
     frames_count_reduction = get_frames_count_reduction()
+
     video = cv2.VideoCapture(str(source_path))
 
     animation_img = convert_video_to_animation_img(
